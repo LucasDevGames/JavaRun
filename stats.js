@@ -1,5 +1,5 @@
 /**
- * @author mrdoob / http://mrdoob.com/
+ * @author LucasGamer213
  */
 
 var Stats = function () {
