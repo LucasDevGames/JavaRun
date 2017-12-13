@@ -1,46 +1,400 @@
-requestAnimationFrame(mainLoop);  // start when code below done.
-// set up keyboard IO
-const keys = {
-    KeyP : false,
-    Enter : false,
-    listener(e){
-       if(keys[e.code] !== undefined){
-           keys[e.code] = e.type === "keydown";
-           e.preventDefault();
-        }
+// Simple menu class
+
+Menu = function(title, items, footer, y, size, width, callback, backgroundCallback)
+{
+	this.title = title;
+	this.items = items;
+	this.footer = footer;
+	this.selectedItem = 0;
+	this.callback = callback;
+	this.y = y;
+	this.size = size;
+	this.width = width;
+	this.backgroundCallback = backgroundCallback;
+}
+
+Menu.prototype.constructor = Menu;
+
+Menu.prototype.Render = function(elapsed)
+{
+	if (this.backgroundCallback)
+		this.backgroundCallback(elapsed);
+	else
+	{
+		var lingrad = ctx.createLinearGradient(0,0,0,canvas.height);
+		lingrad.addColorStop(0, '#000');
+		lingrad.addColorStop(1, '#023');
+		ctx.fillStyle = lingrad;
+		ctx.fillRect(0,0,canvas.width, canvas.height);
+	}
+	
+	ctx.textAlign = "center";
+	ctx.fillStyle = "White";
+
+	var y = this.y;
+	if (this.title)
+	{
+		ctx.font = Math.floor(this.size*1.3).toString() + "px Times New Roman";
+		ctx.fillText(this.title, canvas.width/2, y);
+		y += this.size;
+	}
+
+	for (var i = 0; i < this.items.length; ++i)
+	{
+		var size = Math.floor(this.size*0.8);
+		if (i == this.selectedItem)
+		{
+			var v = Math.floor(127*Math.sin(GameLoopManager.lastTime*0.04) + 127);
+			ctx.fillStyle = "rgba(255,255,"+v.toString()+",255)";
+			size = this.size;
+		}
+		ctx.font = size.toString() + "px Times New Roman";
+		y += this.size;
+		ctx.fillText(this.items[i], canvas.width/2, y);
+		ctx.fillStyle = "White";
+	}
+	if (this.footer)
+	{
+		ctx.textAlign = "right";
+		ctx.font = "14px Times New Roman";
+		ctx.fillText(this.footer, canvas.width-1, canvas.height-3);
+	}
+}	
+
+Menu.prototype.Input = function(elapsed)
+{
+	InputManager.padUpdate();
+	if (InputManager.padPressed & InputManager.PAD.OK)
+	{
+		AudioManager.play("select");
+		this.callback(this.selectedItem);
+		return;
+	}
+	if (InputManager.padPressed & InputManager.PAD.CANCEL)
+	{
+		this.callback(-1);
+		return;
+	}
+	var prevSelected = this.selectedItem;
+	if (InputManager.padPressed & InputManager.PAD.UP)
+		this.selectedItem = (this.selectedItem + this.items.length - 1) % this.items.length;
+	if (InputManager.padPressed & InputManager.PAD.DOWN)
+		this.selectedItem = (this.selectedItem + 1) % this.items.length;
+
+	var leftx = (canvas.width - this.width)/2;
+	if (InputManager.lastMouseX >= leftx && InputManager.lastMouseX < leftx+this.width)
+	{
+		var y = this.y + this.size*0.2; // Adjust for baseline
+		if (this.title)
+			y += this.size;
+		if (InputManager.lastMouseY >= y && InputManager.lastMouseY < (y + this.size*this.items.length))
+			this.selectedItem = Math.floor((InputManager.lastMouseY - y)/this.size);
+	}
+	if (prevSelected != this.selectedItem)
+	{
+		AudioManager.play("blip");
+	}
+}	
+
+Menu.prototype.Tick = function(elapsed)
+{
+	fps.update(elapsed);
+	this.Input(elapsed);
+	this.Render(elapsed);
+}
+// ------------------------------------
+// Assorted JavaScript utility functions
+
+function isDef(v) 			{ return v !== undefined; }
+function isNull(v) 			{ return v === null; }
+function isDefAndNotNull(v) { return vl != null; }
+
+// Helper to provides requestAnimationFrame in a cross browser way.
+// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+if ( !window.requestAnimationFrame ) {
+	window.requestAnimationFrame = ( function() {
+		return window.webkitRequestAnimationFrame ||
+		window.mozRequestAnimationFrame ||
+		window.oRequestAnimationFrame ||
+		window.msRequestAnimationFrame ||
+		function( /* function FrameRequestCallback */ callback, /* DOMElement Element */ element ) {
+			window.setTimeout( callback, 1000 / 60 );
+		};
+	} )();
+}
+
+// Async Image loader
+// from http://www.html5canvastutorials.com/tutorials/html5-canvas-image-loader/
+function LoadImages(images, sources, callback) {
+    var loadedImages = 0;
+    var numImages = 0;
+    for (var src in sources)
+		++numImages;
+    for (var src in sources) {
+        images[src] = new Image();
+		// Set up a callback to track how many images have been loaded
+        images[src].onload = function(){
+            if (++loadedImages >= numImages) {
+                callback();
+            }
+        };
+		images[src].onerror = images[src].onload; // Not a terribly sophisticated error handler. :)
+		images[src].onabort = images[src].onload; 
+
+        images[src].src = sources[src]; // Trigger the image load
     }
 }
-addEventListener("keydown",keys.listener);
-addEventListener("keyup",keys.listener);
 
-// the current game state
-var currentState = startGame;
+// Async loader
+function MultiStepLoader(loadSteps, finale)
+{
+	if (loadSteps.length == 0)
+	{
+		finale();
+		return;
+	}
+	var startTime = Date.now()
+	var stepsCompleted = 0;
+	for (var i = 0; i < loadSteps.length; ++i)
+	{
+		var stepFunc = loadSteps[i][1];
+		stepFunc(LoaderInternalCallback, i);
+	}
+	
+	function LoaderInternalCallback(i)
+	{
+		window.console && window.console.log("Load step completed: " + loadSteps[i][0] + " in " + (Date.now() - startTime).toString() + " ms" );
+		++stepsCompleted;
+		if (stepsCompleted >= loadSteps.length)
+		{
+			finale();
+		}
+	}	
+}
 
-function startGame (){
-    // code to do a single frame of start game
-   // display press enter to start
-   if(keys.Enter){
-      keys.Enter = false;
-      currentState = game;  // start the game
-   }
-}
-function pause(){
-    // code to do a single frame of pause
-   // display pause
-    if(keys.KeyP){
-       keys.KeyP = false; // turn off key
-       currentState = game;   // resume game
-    }
+// http://stackoverflow.com/questions/1114465/getting-mouse-location-in-canvas/6551032#6551032
+function GetRelativePosition(target, x,y) {
+	//this section is from http://www.quirksmode.org/js/events_properties.html
+	// jQuery normalizes the pageX and pageY
+	// pageX,Y are the mouse positions relative to the document
+	// offset() returns the position of the element relative to the document
+	var offset = $(target).offset();
+	var x = x - offset.left;
+	var y = y - offset.top;
 
+	return {"x": x, "y": y};
 }
-function game(){
-    // code to do a single frame of game
-    if(keys.KeyP){
-       keys.KeyP = false; // turn off key
-       currentState = pause;  // pause game
-    }
+// ----------------------------------
+// Game class
+
+Game = function()
+{
+	this.posX = 0;
+	this.posY = 0;
+	this.velX = 100;
+	this.velY = 100;
+	this.sizeX = 80;
+	this.sizeY = 40;
+	this.gravityY = 900;
+	this.paused = false;
+	this.images = {};
+	this.InGameMenu = null;
 }
-function mainLoop(time){
-    currentState(); // call the current game state
-    requestAnimationFrame(mainLoop);
+
+Game.prototype.Tick = function(elapsed)
+{
+	fps.update(elapsed);
+	this.Logic(elapsed);
+	this.Render(elapsed);
+}
+
+Game.prototype.Logic = function(elapsed)
+{
+	// --- Input
+
+	InputManager.padUpdate();
+	
+	// --- Logic
+	
+	if (InputManager.padPressed & InputManager.PAD.CANCEL) {
+		this.paused = true;
+		this.StartInGameMenu();
+	}
+
+	if (!this.paused)
+	{
+		if ((InputManager.padPressed & InputManager.PAD.OK) && this.velY >= -10)
+		{
+			AudioManager.play("jump");
+			this.velY = -1000;
+		}
+
+		// Movement physics
+		this.posX += this.velX*elapsed;
+		this.posY += (this.velY + 0.5*this.gravityY*elapsed)*elapsed;
+		this.velY += this.gravityY*elapsed;
+		// Collision detection and response
+		var bouncedX = false, bouncedY = false;
+		if ( (this.posX <= 0 && this.velX < 0) || (this.posX >= canvas.width-this.sizeX && this.velX > 0) )
+		{
+			this.velX = -this.velX;
+			bouncedX = true;
+		}
+		if ( (this.posY <= 0 && this.velY < 0) || (this.posY >= canvas.height-this.sizeY && this.velY > 0) )
+		{
+			this.velY = -this.velY*0.7;
+			bouncedY = true;
+		}
+		if (bouncedX)
+			AudioManager.play("ping");
+		if (bouncedY)
+			AudioManager.play("bounce");
+	}
+}
+
+Game.prototype.Render = function(elapsed)
+{
+	// Clear the screen
+	var grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+	grad.addColorStop(0, '#06B');
+	grad.addColorStop(0.9, '#fff');
+	grad.addColorStop(0.9, '#3C0');
+	grad.addColorStop(1, '#fff');
+	ctx.fillStyle = grad;
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+	// Render objects
+	ctx.drawImage(this.images['sun'], 600, 20);
+	
+	ctx.strokeRect(this.posX, this.posY, this.sizeX, this.sizeY);
+	ctx.textAlign = "center";
+	ctx.fillStyle = "red";
+	ctx.font = "10px sans-serif";
+	ctx.fillText("Hello World!", this.posX+this.sizeX/2, this.posY+25);
+	// Paused / Unpaused text
+	//ctx.textAlign = "center";
+	//ctx.fillStyle = "white";
+	//ctx.font = "22px sans-serif";
+	//ctx.fillText(this.paused? "Paused" : "Running", canvas.width/2, 25);
+}
+
+
+Game.prototype.StartInGameMenu = function()
+{
+	InputManager.reset();
+	var bindThis = this;
+	this.InGameMenu = new Menu("In-game Menu",
+			[ "Continue", "Quit" ],
+			"",
+			70, 50, 400,
+			function(numItem) {
+				if (numItem == 0) { GameLoopManager.run(function(elapsed) { bindThis.Tick(elapsed); }); bindThis.paused = false; bindThis.InGameMenu = null;  }
+				else if (numItem == 1) StartMainMenu();
+			},
+			function(elapsed) { bindThis.Render(elapsed); });
+	GameLoopManager.run(function(elapsed) { bindThis.InGameMenu.Tick(elapsed); });
+}
+
+// Simple menu class
+
+Menu = function(title, items, footer, y, size, width, callback, backgroundCallback)
+{
+	this.title = title;
+	this.items = items;
+	this.footer = footer;
+	this.selectedItem = 0;
+	this.callback = callback;
+	this.y = y;
+	this.size = size;
+	this.width = width;
+	this.backgroundCallback = backgroundCallback;
+}
+
+Menu.prototype.constructor = Menu;
+
+Menu.prototype.Render = function(elapsed)
+{
+	if (this.backgroundCallback)
+		this.backgroundCallback(elapsed);
+	else
+	{
+		var lingrad = ctx.createLinearGradient(0,0,0,canvas.height);
+		lingrad.addColorStop(0, '#000');
+		lingrad.addColorStop(1, '#023');
+		ctx.fillStyle = lingrad;
+		ctx.fillRect(0,0,canvas.width, canvas.height);
+	}
+	
+	ctx.textAlign = "center";
+	ctx.fillStyle = "White";
+
+	var y = this.y;
+	if (this.title)
+	{
+		ctx.font = Math.floor(this.size*1.3).toString() + "px Times New Roman";
+		ctx.fillText(this.title, canvas.width/2, y);
+		y += this.size;
+	}
+
+	for (var i = 0; i < this.items.length; ++i)
+	{
+		var size = Math.floor(this.size*0.8);
+		if (i == this.selectedItem)
+		{
+			var v = Math.floor(127*Math.sin(GameLoopManager.lastTime*0.04) + 127);
+			ctx.fillStyle = "rgba(255,255,"+v.toString()+",255)";
+			size = this.size;
+		}
+		ctx.font = size.toString() + "px Times New Roman";
+		y += this.size;
+		ctx.fillText(this.items[i], canvas.width/2, y);
+		ctx.fillStyle = "White";
+	}
+	if (this.footer)
+	{
+		ctx.textAlign = "right";
+		ctx.font = "14px Times New Roman";
+		ctx.fillText(this.footer, canvas.width-1, canvas.height-3);
+	}
+}	
+
+Menu.prototype.Input = function(elapsed)
+{
+	InputManager.padUpdate();
+	if (InputManager.padPressed & InputManager.PAD.OK)
+	{
+		AudioManager.play("select");
+		this.callback(this.selectedItem);
+		return;
+	}
+	if (InputManager.padPressed & InputManager.PAD.CANCEL)
+	{
+		this.callback(-1);
+		return;
+	}
+	var prevSelected = this.selectedItem;
+	if (InputManager.padPressed & InputManager.PAD.UP)
+		this.selectedItem = (this.selectedItem + this.items.length - 1) % this.items.length;
+	if (InputManager.padPressed & InputManager.PAD.DOWN)
+		this.selectedItem = (this.selectedItem + 1) % this.items.length;
+
+	var leftx = (canvas.width - this.width)/2;
+	if (InputManager.lastMouseX >= leftx && InputManager.lastMouseX < leftx+this.width)
+	{
+		var y = this.y + this.size*0.2; // Adjust for baseline
+		if (this.title)
+			y += this.size;
+		if (InputManager.lastMouseY >= y && InputManager.lastMouseY < (y + this.size*this.items.length))
+			this.selectedItem = Math.floor((InputManager.lastMouseY - y)/this.size);
+	}
+	if (prevSelected != this.selectedItem)
+	{
+		AudioManager.play("blip");
+	}
+}	
+
+Menu.prototype.Tick = function(elapsed)
+{
+	fps.update(elapsed);
+	this.Input(elapsed);
+	this.Render(elapsed);
 }
