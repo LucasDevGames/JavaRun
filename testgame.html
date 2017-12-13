@@ -8,54 +8,6 @@
 	<link rel="icon" href="images/car.png" />
 </head> 
 <style>
-	.overlay {
-    height: 100%;
-    width: 100%;
-    display: none;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0, 0.9);
-}
-
-.overlay-content {
-    position: relative;
-    top: 25%;
-    width: 100%;
-    text-align: center;
-    margin-top: 30px;
-}
-
-.overlay a {
-    padding: 8px;
-    text-decoration: none;
-    font-size: 36px;
-    color: #818181;
-    display: block;
-    transition: 0.3s;
-}
-
-.overlay a:hover, .overlay a:focus {
-    color: #f1f1f1;
-}
-
-.overlay .closebtn {
-    position: absolute;
-    top: 20px;
-    right: 45px;
-    font-size: 60px;
-}
-
-@media screen and (max-height: 450px) {
-  .overlay a {font-size: 20px}
-  .overlay .closebtn {
-    font-size: 40px;
-    top: 15px;
-    right: 35px;
-  }
-}
   .res-btn {
 	-moz-box-shadow:inset 0px 1px 0px 0px #f29c93;
 	-webkit-box-shadow:inset 0px 1px 0px 0px #f29c93;
@@ -193,15 +145,7 @@
       <td><input id="fogDensity" type='range' min='0' max='50' title="integer (0-50)"></td>
     </tr>
   </table>
-	<div id="myNav" class="overlay">
-  <button href="javascript:void(0)" class="res-btn" onclick="closeScreen()">Pause</button>
-  <div class="overlay-content">
-    <a href="#">About</a>
-    <a href="#">Services</a>
-    <a href="#">Clients</a>
-    <a href="#">Contact</a>
-  </div>
-<span style="font-size:30px;cursor:pointer" onclick="openScreen()">&#9776; Pause</span>
+  <button class="res-btn" onclick="autoRefresh()">Pause</button>
   <div id="racer">
     <div id="hud">
       <span id="speed"            class="hud"><span id="speed_value" class="value">0</span> mph</span>
@@ -819,15 +763,7 @@
 
  function AutoRefresh() {
                location.reload();
-            }
-	  function openScreen() {
-    document.getElementById("myNav").style.display = "block";
-}
-
-function closeScreen() {
-    document.getElementById("myNav").style.display = "none";
-}
-  </script>
+     </script>
 
 </body> 
 </html>
