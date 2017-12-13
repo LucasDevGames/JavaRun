@@ -193,7 +193,15 @@
       <td><input id="fogDensity" type='range' min='0' max='50' title="integer (0-50)"></td>
     </tr>
   </table>
-<button class="res-btn"onclick="AutoRefresh()">Restart Game</button>
+	<div id="myNav" class="overlay">
+  <button href="javascript:void(0)" class="res-btn" onclick="closeNav()">Pause</button>
+  <div class="overlay-content">
+    <a href="#">About</a>
+    <a href="#">Services</a>
+    <a href="#">Clients</a>
+    <a href="#">Contact</a>
+  </div>
+</div>
   <div id="racer">
     <div id="hud">
       <span id="speed"            class="hud"><span id="speed_value" class="value">0</span> mph</span>
