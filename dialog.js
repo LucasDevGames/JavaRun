@@ -21,7 +21,6 @@
 
 				this.okay = function () {
 					playAudio3();
-					Sleep(3000);
 					this.callback();
 					this.close();
 				};
