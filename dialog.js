@@ -17,7 +17,7 @@
 					dlg.style.opacity = 1;
 					dlgBody.textContent = msg;
 					this.callback = callback;
-					document.getElementById('freezeLayer').style.display = '';
+					document.getElementById('freezeLayer').style.display = 'none';
 				};
 
 				this.okay = function () {
