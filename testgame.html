@@ -762,9 +762,20 @@
     //=========================================================================
 
  function resetSettings() {
-	 	alert("Your game will be reseted.");
                location.reload(); }
 	  
+	  function confirmValidation()
+{
+    var retVal = confirm("Do you want to reset your setttings?");
+    if (retVal == true)
+    {   resetSettings();
+        return true;
+    } 
+    else
+    {   alert("Canceled")
+        return false;
+    }
+}
 
      </script>
 
