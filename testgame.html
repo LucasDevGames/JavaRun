@@ -148,7 +148,14 @@
       <td><input id="fogDensity" type='range' min='0' max='50' title="integer (0-50)"></td>
     </tr>
   </table>
-  <button class="reset-btn" onclick="Confirm.render("Are you sure about that?")">Reset Settings</button>
+	<div id="dialogCont" class="reset-btn dlg-container">
+			<div class="dlg-header">Reset Settings</div>
+			<div id="dlgBody" class="dlg-body">Do you wnat to reset your settings?</div>
+			<div class="dlg-footer">
+				<a onclick="CustomConfirm.okay();">Ok</a>
+				<a onclick="CustomConfirm.close();">Cancel</a>
+			</div>
+		</div>
   <div id="racer">
     <div id="hud">
       <span id="speed"            class="hud"><span id="speed_value" class="value">0</span> mph</span>
