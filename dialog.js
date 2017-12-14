@@ -28,6 +28,7 @@
 				};
 
 				this.close = function () {
+					playAudio2();
 					var dlg = document.getElementById('dialogCont');
 					dlg.style.top = '-30%';
 					dlg.style.opacity = 0;
