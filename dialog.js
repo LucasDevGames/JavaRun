@@ -1,12 +1,7 @@
-
-			function gotoMyChannel () {
+			function gotoMyChannelCustom () {
 				if(confirm('Do you want to reset your settings?')){
 					location.reload();
 				}
-			}
-
-			function gotoMyChannelCustom () {
-				window.location = 'https://youtube.com/c/SamSolomonPrabuSD';
 			}
 
 			var CustomConfirm = new function(){
