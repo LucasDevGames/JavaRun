@@ -29,7 +29,6 @@
 					playAudio2();
 					var dlg = document.getElementById('dialogCont');
 					dlg.style.top = '-30%';
-					dlg.style.opacity = 0;
-					document.getElementById("freezeLayer").style.display = 'none';
+					dlg.style.opacity = 0
 				}
 			}
