@@ -21,8 +21,7 @@
 				};
 
 				this.okay = function () {
-					console.log('Reseting Settings...')
-					console.log('Settings Reseted')
+					playAudio3();
 					this.callback();
 					this.close();
 				};
