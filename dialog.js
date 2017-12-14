@@ -1,7 +1,7 @@
 
 			function gotoMyChannel () {
-				if(confirm('Do you want to visit the channel?')){
-					window.location = 'https://youtube.com/c/SamSolomonPrabuSD';
+				if(confirm('Do you want to reset your settings?')){
+					location.reload();
 				}
 			}
 
@@ -27,6 +27,7 @@
 				};
 
 				this.close = function () {
+					console.log('Reseting settings');
 					var dlg = document.getElementById('dialogCont');
 					dlg.style.top = '-30%';
 					dlg.style.opacity = 0;
