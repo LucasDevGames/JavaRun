@@ -149,7 +149,35 @@
       <td><input id="fogDensity" type='range' min='0' max='50' title="integer (0-50)"></td>
     </tr>
   </table>
-  <button class="reset-btn" onclick="confirmValidation()">Reset Settings</button>
+  <button class="reset-btn alert" onclick="confirmValidation()">Reset Settings</button>
+	<script type="text/javascript">
+                                $('.alert').on('click', function () {
+                                    $.confirm({
+                                        title: 'Confirm!',
+                                        content: 'Simple confirm!',
+                                        buttons: {
+                                            confirm: function () {
+                                                $.alert('Confirmed!');
+                                            },
+                                            cancel: function () {
+                                                $.alert('Canceled!');
+                                            },
+                                            somethingElse: {
+                                                text: 'Something else',
+                                                btnClass: 'btn-blue',
+                                                keys: [
+                                                    'enter',
+                                                    'shift'
+                                                ],
+                                                action: function () {
+                                                    this.$content // reference to the content
+                                                    $.alert('Something else?');
+                                                }
+                                            }
+                                        }
+                                    });
+                                });
+                            </script>
   <div id="racer">
     <div id="hud">
       <span id="speed"            class="hud"><span id="speed_value" class="value">0</span> mph</span>
