@@ -3,7 +3,9 @@
 <html>
 <head>
   <title>Java Run - Race</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="dialog.css">
+<script src="dialog.js"></script>
   <link href="common.css" rel="stylesheet" type="text/css" />
 	<link rel="icon" href="images/car.png" />
 	
@@ -92,15 +94,6 @@
 	position:relative;
 	top:1px;
 }
-	.alert {
-	border:1px solid #d83526;
-	display:inline-block;
-	cursor:pointer;
-	color:#ffffff;
-	font-family:Arial;
-	font-size:15px;
-	font-weight:bold;
-	padding:6px 24px; }
 
 </style>
 <body> 
@@ -155,35 +148,7 @@
       <td><input id="fogDensity" type='range' min='0' max='50' title="integer (0-50)"></td>
     </tr>
   </table>
-  <button class="reset-btn alert" onclick="confirmValidation()">Reset Settings</button>
-	<script type="text/javascript">
-                                $('.alert').on('click', function () {
-                                    $.confirm({
-                                        title: 'Confirm!',
-                                        content: 'Simple confirm!',
-                                        buttons: {
-                                            confirm: function () {
-                                                $.alert('Confirmed!');
-                                            },
-                                            cancel: function () {
-                                                $.alert('Canceled!');
-                                            },
-                                            somethingElse: {
-                                                text: 'Something else',
-                                                btnClass: 'btn-blue',
-                                                keys: [
-                                                    'enter',
-                                                    'shift'
-                                                ],
-                                                action: function () {
-                                                    this.$content // reference to the content
-                                                    $.alert('Something else?');
-                                                }
-                                            }
-                                        }
-                                    });
-                                });
-                            </script>
+  <button class="reset-btn" onclick=" onfirmValidation()">Reset Settings</button>
   <div id="racer">
     <div id="hud">
       <span id="speed"            class="hud"><span id="speed_value" class="value">0</span> mph</span>
