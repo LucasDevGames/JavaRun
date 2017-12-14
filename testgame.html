@@ -8,7 +8,7 @@
 	<link rel="icon" href="images/car.png" />
 </head> 
 <style>
-  .res-btn {
+  .reset-btn {
 	-moz-box-shadow:inset 0px 1px 0px 0px #f29c93;
 	-webkit-box-shadow:inset 0px 1px 0px 0px #f29c93;
 	box-shadow:inset 0px 1px 0px 0px #f29c93;
@@ -37,7 +37,7 @@
 	float: left;
 	width: 17em;
 	  padding: 1em; }
-.res-btn:hover {
+.reset-btn:hover {
 	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ce0100), color-stop(1, #fe1a00));
 	background:-moz-linear-gradient(top, #ce0100 5%, #fe1a00 100%);
 	background:-webkit-linear-gradient(top, #ce0100 5%, #fe1a00 100%);
@@ -47,7 +47,7 @@
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ce0100', endColorstr='#fe1a00',GradientType=0);
 	background-color:#ce0100;
 }
-.res-btn:active {
+.reset-btn:active {
 	position:relative;
 	top:1px;
 }
@@ -145,7 +145,7 @@
       <td><input id="fogDensity" type='range' min='0' max='50' title="integer (0-50)"></td>
     </tr>
   </table>
-  <button class="res-btn" onclick="AutoRefresh()">Restart</button>
+  <button class="res-btn" onclick="resetSettings()">Reset Settings</button>
   <div id="racer">
     <div id="hud">
       <span id="speed"            class="hud"><span id="speed_value" class="value">0</span> mph</span>
