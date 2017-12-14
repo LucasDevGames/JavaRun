@@ -148,7 +148,7 @@
       <td><input id="fogDensity" type='range' min='0' max='50' title="integer (0-50)"></td>
     </tr>
   </table>
-<button class="reset-btn" onclick="CustomConfirm.show('Do you want to reset your settings?', gotoMyChannelCustom);">Reset Settings</button>
+<button class="reset-btn" onclick="CustomConfirm.show('Do you want to reset your settings?', gotoMyChannelCustom, play);">Reset Settings</button>
 		<div id="dialogCont" class="dlg-container">
 			<div class="dlg-header">Reset Settings Menu</div>
 			<div id="dlgBody" class="dlg-body">Do you wnat to continue?</div>
@@ -157,6 +157,10 @@
 				<a onclick="CustomConfirm.close();">Cancel</a>
 			</div>
 		</div>
+	<audio id="myAudio">
+  <source src="https://freesound.org/data/previews/264/264762_2672327-lq.ogg" type="audio/ogg">
+  <source src="https://freesound.org/data/previews/264/264762_2672327-lq.mp3" type="audio/mpeg">
+</audio>
   <div id="racer">
     <div id="hud">
       <span id="speed"            class="hud"><span id="speed_value" class="value">0</span> mph</span>
@@ -777,18 +781,13 @@
 	  
 	  function confirmValidation()
 {
-    var retVal = confirm("Do you want to reset your setttings?");
-    if (retVal == true)
-    {   resetSettings();
-        return true;
-    } 
-    else
-    {   alert("Canceled")
-        return false;
-    }
-}
+   var x = document.getElementById("myAudio"); 
 
-     </script>
+function playAudio() { 
+    x.play(); 
+} 
+
+	</script>
 
 </body> 
 </html>
