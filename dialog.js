@@ -17,12 +17,12 @@
 					dlg.style.opacity = 1;
 					dlgBody.textContent = msg;
 					this.callback = callback;
-					document.getElementById('freezeLayer').style.display = 'none';
+					document.getElementById("freezeLayer").style.display = 'none';
 				};
 
 				this.okay = function () {
 					playAudio3();
-					Sleep(3000)
+					Sleep(3000);
 					this.callback();
 					this.close();
 				};
@@ -33,6 +33,6 @@
 					var dlg = document.getElementById('dialogCont');
 					dlg.style.top = '-30%';
 					dlg.style.opacity = 0;
-					document.getElementById('freezeLayer').style.display = 'none';
+					document.getElementById("freezeLayer").style.display = 'none';
 				}
 			}
