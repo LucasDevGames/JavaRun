@@ -1,10 +1,4 @@
-			function gotoMyChannel () {
-				if(confirm('Do you want to reset your settings?')){
-					location.reload();
-				}
-			}
-
-			function gotoMyChannelCustom () {
+			function confirm () {
 				location.reload();
 			}
 
