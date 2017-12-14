@@ -28,7 +28,6 @@
 
 				this.close = function () {
 					playAudio2();
-					Sleep(2000)
 					var dlg = document.getElementById('dialogCont');
 					dlg.style.top = '-30%';
 					dlg.style.opacity = 0;
