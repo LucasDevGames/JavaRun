@@ -21,6 +21,8 @@
 				};
 
 				this.okay = function () {
+					console.log('Reseting Settings...')
+					console.log('Settings Reseted')
 					this.callback();
 					this.close();
 				};
